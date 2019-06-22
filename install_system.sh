@@ -954,9 +954,9 @@ if [[ "${MysqlPort}" != "${MysqlDefaultPort}" ]];then
 fi
 
 # 调整rsync，ssh端口，配置redis端口
-RSYNC_PORT='7988'
-SSH_PORT='62919'
-REDIS_PORT='60312'
+RSYNC_PORT='786'
+SSH_PORT='22'
+REDIS_PORT='5632'
 
 OutputMsg '开始安装系统'
 
