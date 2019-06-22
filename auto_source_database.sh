@@ -1,12 +1,14 @@
 #!/bin/bash
 
-# 自动删除旧表，入库脚本
-# 注意在数据库所在服ip执行[dbHost='127.0.0.1'],数据库不存在时会提示创建数据库
-# ./auto_source_database.sh [解压后的目录名] [数据库名-可省略]
+# 注意要在数据库所在服ip执行[dbHost='127.0.0.1'],数据库不存在时会提示创建数据库
+# cd /3dgame/miaole/23001/rsync/tools
+# tar -zxvf /3dgame/miaole/23176/db_bakup/3dgame_miaole_23176_game_2019-06-22-03-08-35.tar.gz  [tar -jxvf *tar.bz2]
+# ./auto_source_database.sh 3dgame_miaole_23176_game_2019-06-22-03-08-35 3dgame_miaole_23176_game
+# ./auto_source_database.sh [解压后目录名] [数据库名]
 
 basePath=$(cd "$(dirname "$0")";pwd)
 dbUser='root'
-dbPass='11111111'
+dbPass='1111111'
 dbHost='127.0.0.1'
 dbPort='9999'
 
