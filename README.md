@@ -1,3 +1,4 @@
 # install_system
 lnmp环境自动初始化脚本
 支持mysql多实例
+php单进程执行日志解析任务，自动清除上次执行异常锁
