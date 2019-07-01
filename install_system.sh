@@ -783,6 +783,96 @@ Install_Zabbix_Online()
 	cd ${SCRIPT_DIR}
 }
 
+#升级gcc6.1
+Upgrade_Gcc()
+{
+	cd ${SCRIPT_DIR}
+	cd ${PACKAGE_DIR}/
+
+	#安装依赖库
+	yum install -y texinfo-tex flex zip libgcc.i686 glibc-devel.i686
+
+	#安装gcc
+	tar zxf gcc-6.1.0.tar.gz
+	cd gcc-6.1.0/
+	./contrib/download_prerequisites   
+	mkdir gcc-build-6.1.0
+	cd gcc-build-6.1.0
+	../configure -enable-checking=release -enable-languages=c,c++ -disable-multilib
+	yum -y groupinstall "Development Tools"
+	make && make install
+
+	#找到 gcc 6.1.0 最新的库文件
+	NEWEST_GCC_LIB_FILE=`find ../ -name "libstdc++.so*" |grep 'stage1-x86_64-pc-linux-gnu/libstdc++-v3/src/.libs/libstdc++.so.6.0.22'`
+	/bin/cp $NEWEST_GCC_LIB_FILE /usr/lib64
+	cd /usr/lib64
+	/bin/rm libstdc++.so.6
+	ln -s libstdc++.so.6.0.22 libstdc++.so.6
+	#---------到此时，电脑上有两个版本的gcc，位置不一样（/usr/bin/gcc /usr/local/bin/gcc）----------#
+	/bin/mv /usr/bin/gcc /usr/bin/gcc4.4.7
+	ln -s /usr/local/bin/gcc /usr/bin/gcc
+
+	/bin/mv /usr/bin/g++ /usr/bin/g++4.4.7
+	ln -s /usr/local/bin/g++ /usr/bin/g++
+
+	mv /usr/bin/c++ /usr/bin/c++4.4.7
+	ln -s /usr/local/bin/c++ /usr/bin/c++
+
+	#显示当前gcc版本
+	echo "当前gcc版本："
+	gcc -v
+	echo "当前g++版本："
+	g++ -v
+
+	echo "-----------------注意：升级完gcc要重启服务器（reboot）---------------------"
+	cd ${SCRIPT_DIR}
+}
+
+# 升级gcc到4.8.5版本
+Upgrade_Gcc_4_8_5()
+{
+	cd ${SCRIPT_DIR}
+	cd ${PACKAGE_DIR}/
+
+	#安装依赖库
+	yum install -y texinfo-tex flex zip libgcc.i686 glibc-devel.i686
+
+	#安装gcc
+	tar zxf gcc-4.8.5.tar.gz
+	cd gcc-4.8.5/
+	./contrib/download_prerequisites
+	mkdir gcc-build-4.8.5
+	cd gcc-build-4.8.5
+	../configure -enable-checking=release -enable-languages=c,c++ -disable-multilib
+	yum -y groupinstall "Development Tools"
+	make && make install
+
+	#找到 gcc 4.8.5 最新的库文件
+	NEWEST_GCC_LIB_FILE=`find ../ -name "libstdc++.so*" | grep 'stage1-x86_64-unknown-linux-gnu/libstdc++-v3/src/.libs/libstdc++.so.6.0.19'`
+	/bin/cp $NEWEST_GCC_LIB_FILE /usr/lib64
+	cd /usr/lib64
+	/bin/rm libstdc++.so.6
+	ln -s libstdc++.so.6.0.19 libstdc++.so.6
+	#---------此时有两个版本的gcc，位置不一样（/usr/bin/gcc /usr/local/bin/gcc）----------#
+	/bin/mv /usr/bin/gcc /usr/bin/gcc4.4.7
+	ln -s /usr/local/bin/gcc /usr/bin/gcc
+
+	/bin/mv /usr/bin/g++ /usr/bin/g++4.4.7
+	ln -s /usr/local/bin/g++ /usr/bin/g++
+
+	mv /usr/bin/c++ /usr/bin/c++4.4.7
+	ln -s /usr/local/bin/c++ /usr/bin/c++
+
+	#显示当前gcc版本
+	echo "当前gcc版本："
+	gcc -v
+	echo "当前g++版本："
+	g++ -v
+
+	echo "-----------------注意：升级完gcc要重启服务器（reboot）---------------------"
+	cd ${SCRIPT_DIR}
+}
+
 # 输出检测信息
 Check_Config()
 {
