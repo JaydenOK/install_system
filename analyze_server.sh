@@ -1,5 +1,7 @@
 #!/bin/bash
+
 [[ -z $1 ]] && echo "使用: ${0} [game_name] " && exit
+
 game=$1
 now=`date +"%s"`
 
@@ -26,8 +28,8 @@ function output_arr ()
 	arr=$1
 	for key in ${!arr[@]}
 	do
-			echo "平台：${key} ，数量 :"
-			echo ${arr[$key]}
+        echo "平台：${key} ，数量 :"
+        echo ${arr[$key]}
 	done
 }
 
@@ -35,10 +37,10 @@ for plat_cname in `ls /$game|grep -v lost+found`;do
         # 初始化数组
         ret=`array_key_exists $plat_cname $total_arr`
         if [[ ! $ret ]] ;then
-                total_arr[$plat_cname]=0
-                merge_arr[$plat_cname]=0
-                online_arr[$plat_cname]=0
-                unopen_arr[$plat_cname]=0
+            total_arr[$plat_cname]=0
+            merge_arr[$plat_cname]=0
+            online_arr[$plat_cname]=0
+            unopen_arr[$plat_cname]=0
         fi
         # 统计平台总服数
         total=`ls /$game/$plat_cname|grep -v managertool|grep -v mobileclient_res|wc -l`
@@ -46,19 +48,19 @@ for plat_cname in `ls /$game|grep -v lost+found`;do
 
         # 统计合服数
         for server_id in `ls /$game/$plat_cname|grep -v managertool|grep -v mobileclient_res`;do
-                commonconfig_file="/${game}/${plat_cname}/${server_id}/out/config/serverconfig/commonconfig.xml"
-                if [[ -f $commonconfig_file ]] ;then
-                        ServerStartTimeS=`cat $commonconfig_file | grep  ServerStartTimeS | sed 's#.*<ServerStartTimeS>\(.*\)<\/ServerStartTimeS>.*#\1#g'`
-                        if [[ $ServerStartTimeS -gt $now ]];then
-                                # 未开服
-                                let unopen_arr[$plat_cname]++
-                                else
-                                # 已运行
-                                let online_arr[$plat_cname]++
-                        fi
-                else
-                        let merge_arr[$plat_cname]++
+            commonconfig_file="/${game}/${plat_cname}/${server_id}/out/config/serverconfig/commonconfig.xml"
+            if [[ -f $commonconfig_file ]] ;then
+                ServerStartTimeS=`cat $commonconfig_file | grep  ServerStartTimeS | sed 's#.*<ServerStartTimeS>\(.*\)<\/ServerStartTimeS>.*#\1#g'`
+                if [[ $ServerStartTimeS -gt $now ]];then
+                    # 未开服
+                    let unopen_arr[$plat_cname]++
+                    else
+                    # 已运行
+                    let online_arr[$plat_cname]++
                 fi
+            else
+                    let merge_arr[$plat_cname]++
+            fi
         done
 done
 
@@ -71,25 +73,47 @@ function dump()
 }
 
 echo -e "\n所有服信息：\n"
+total=0
 for key in ${!total_arr[@]}
 do
-		echo "${key} : ${total_arr[$key]}"
+    echo "${key} : ${total_arr[$key]}"
+    ((total=total+${total_arr[$key]}))
 done
+echo -e "总数：${total}\n"
 
 echo -e "\n已合服信息：\n"
+total=0
 for key in ${!merge_arr[@]}
 do
-		echo "${key} : ${merge_arr[$key]}"
+    echo "${key} : ${merge_arr[$key]}"
+    ((total=total+${merge_arr[$key]}))
 done
+echo -e "总数：${total}\n"
 
 echo -e "\n正在运行服信息：\n"
+total=0
 for key in ${!online_arr[@]}
 do
-		echo "${key} : ${online_arr[$key]}"
+    echo "${key} : ${online_arr[$key]}"
+    ((total=total+${online_arr[$key]}))
 done
+echo -e "总数：${total}\n"
 
 echo -e "\n未开服信息：\n"
+total=0
 for key in ${!unopen_arr[@]}
 do
-		echo "${key} : ${unopen_arr[$key]}"
+    echo "${key} : ${unopen_arr[$key]}"
+    ((total=total+${unopen_arr[$key]}))
 done
+echo -e "总数：${total}\n"
+
+echo "磁盘信息[单位：G]:"
+df -h
+
+echo ""
+echo "内存信息[单位：M]:"
+free -m
+
+
+exit
