@@ -1,13 +1,13 @@
 <?php
 /**
-php+redis-负载均衡-保持多台web业务服务器会话一致
-架构 ： 主+备+web1+web2+web3(auth-redis会话服务器)
-192.168.227.141：nginx + keepalived   master
-192.168.227.142：nginx + keepalived   backup
-192.168.227.143：nginx (web)
-192.168.227.144：nginx (web)
-192.168.227.145：auth (做会话服务器 : 此处测试用 192.168.227.142 充当会话服务器 )
-*/
+ * php+redis-负载均衡-保持多台web业务服务器会话一致
+ * 架构 ： 主+备+web1+web2+web3(auth-redis会话服务器)
+ * 192.168.227.141：nginx + keepalived   master
+ * 192.168.227.142：nginx + keepalived   backup
+ * 192.168.227.143：nginx (web)
+ * 192.168.227.144：nginx (web)
+ * 192.168.227.145：auth (做会话服务器 : 此处测试用 192.168.227.142 充当会话服务器 )
+ */
 
 //全局变量保存
 $_ENV = array(
@@ -36,12 +36,11 @@ class SessionHandle
         ini_set('session.gc_divisor', 50);
         ini_set('session.name', $_ENV['conf']['session_name']);
         ini_set('session.use_cookies', 1);
-        /**
-        if (true) {
-            //客户端禁用cookie时，启用url传值，html页面上的链接会基于url传递SESSIONID
-            ini_set('session.use_trans_sid', 1);
-            ini_set('session.use_only_cookies', 0);
-        } */
+        //if (true) {
+        ////客户端禁用cookie时，启用url传值，html页面上的链接会基于url传递SESSIONID
+        //    ini_set('session.use_trans_sid', 1);
+        //    ini_set('session.use_only_cookies', 0);
+        //}
         ini_set('session.gc_maxlifetime', $_ENV['conf']['lifetime']);
         ini_set('session.cookie_lifetime', $_ENV['conf']['lifetime']);
         try {
@@ -108,4 +107,4 @@ print_r($_ENV);
 echo "<br><br>COOKIE:<br>";
 print_r($_COOKIE);
 
-echo '<br><br>','<a href="?a=11">下一页</a>';
+echo '<br><br>', '<a href="?a=11">下一页</a>';
