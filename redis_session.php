@@ -108,3 +108,52 @@ echo "<br><br>COOKIE:<br>";
 print_r($_COOKIE);
 
 echo '<br><br>', '<a href="?a=11">下一页</a>';
+
+
+
+
+
+
+###################################################
+/*
+//查看redi当前保存的session信息文件:redis.php
+<?php
+
+//全局变量保存
+$_ENV = array(
+    //redis对象
+    'cache' => null,
+    //配置
+    'conf'  => array(
+        'host'         => '192.168.227.142',
+        'port'         => '60312',
+        'password'     => 'nF2eZ830OkIgTFmTUmiu',
+        'lifetime'     => 1200,     //20分钟失效
+        'session_name' => 'SESSIONID',
+    ),
+);
+
+
+try {
+    $_ENV['cache'] = new Redis();
+    $_ENV['cache']->connect($_ENV['conf']['host'], $_ENV['conf']['port']);
+    $_ENV['cache']->auth($_ENV['conf']['password']);
+} catch (\Exception $e) {
+    if (0 == strncasecmp("Can't connect to", $e->getMessage(), strlen("Can't connect to"))) {
+        exit('connect redis fail:' . $_SERVER['HTTP_HOST']);
+    }
+}
+
+
+echo '当前redis保存信息：<br>';
+
+$keys = $_ENV['cache']->keys('*');
+foreach ($keys as $key) {
+    $str = $_ENV['cache']->get($key);
+    echo "键：{$key} ;值：{$str}", '<br>';
+}
+
+
+
+*/
+
