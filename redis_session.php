@@ -95,12 +95,15 @@ if ($_ENV[$session_name] !== '') {
 }
 session_start();
 
-$_SESSION['user'] = 'john';
+if (isset($_GET['user_id'])) {
+    //模拟登录,保存账号信息
+    $_SESSION['user'] = $_GET['user_id'];
+}
 
 echo "被访问的主机:", $_SERVER['SERVER_ADDR'], '<br>';
 echo "<br><br>请求参数:<br>";
 print_r($_REQUEST);
-echo "<br><br>SESSION:<br>";
+echo "<br><br>########## 当前用户的SESSION信息 ##########<br>";
 print_r($_SESSION);
 echo "<br><br>ENV:<br>";
 print_r($_ENV);
